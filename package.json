@@ -1,11 +1,14 @@
 {
-  "name": "nuxt-ddd-toolkit",
-  "version": "0.0.1",
+  "name": "@luckys_luis/nuxt-ddd-toolkit",
+  "version": "0.0.2",
   "description": "DDD toolkit for Nuxt and Nitro projects with optional nuxt-laravelize integration",
   "repository": "nuxt-laravelize/nuxt-ddd-toolkit",
   "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@10.28.2",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "laravelize": "./dist/cli/bin.mjs",
     "lz": "./dist/cli/bin.mjs"
@@ -57,13 +60,13 @@
     "nuxt": ">=4.0.0"
   },
   "peerDependenciesMeta": {
-    "nuxt-laravelize": {
+    "@luckys_luis/nuxt-laravelize": {
       "optional": true
     }
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
-    "@luckys_luis/nuxt-laravelize-config": "^0.0.1",
+    "@luckys_luis/nuxt-laravelize-config": "^0.0.2",
     "@nuxt/devtools": "^3.2.4",
     "@nuxt/eslint-config": "^1.15.2",
     "@nuxt/module-builder": "^1.0.2",

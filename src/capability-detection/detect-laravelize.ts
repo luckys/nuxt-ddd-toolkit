@@ -26,6 +26,8 @@ export function detectLaravelizeCapability(currentWorkingDirectory: string): Cap
   ])
 
   return {
-    installed: dependencyNames.has('nuxt-laravelize'),
+    installed:
+      dependencyNames.has('@luckys_luis/nuxt-laravelize')
+      || dependencyNames.has('nuxt-laravelize'),
   }
 }

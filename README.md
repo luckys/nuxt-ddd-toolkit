@@ -1,4 +1,4 @@
-# nuxt-ddd-toolkit
+# @luckys_luis/nuxt-ddd-toolkit
 
 English | [Español](./README.es.md)
 
@@ -39,7 +39,7 @@ This package bundles three bootstrap capabilities:
 Install in your Nuxt project:
 
 ```bash
-pnpm add nuxt-ddd-toolkit
+pnpm add @luckys_luis/nuxt-ddd-toolkit
 ```
 
 Peer requirement:
@@ -48,7 +48,7 @@ Peer requirement:
 
 Optional companion package:
 
-- `nuxt-laravelize`
+- `@luckys_luis/nuxt-laravelize`
 
 ## Quick start
 
@@ -58,7 +58,7 @@ In `nuxt.config.ts`:
 import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
-  modules: ['nuxt-ddd-toolkit'],
+  modules: ['@luckys_luis/nuxt-ddd-toolkit'],
   dddToolkit: {
     enableCapabilityDetection: true,
   },
@@ -127,7 +127,7 @@ Output behavior:
 
 Package export:
 
-- `nuxt-ddd-toolkit/eslint-plugin`
+- `@luckys_luis/nuxt-ddd-toolkit/eslint-plugin`
 
 Rule included in `recommended` config:
 
@@ -140,7 +140,7 @@ Purpose:
 Example flat config usage:
 
 ```js
-import { rules, configs } from 'nuxt-ddd-toolkit/eslint-plugin'
+import { rules, configs } from '@luckys_luis/nuxt-ddd-toolkit/eslint-plugin'
 
 export default [
   {

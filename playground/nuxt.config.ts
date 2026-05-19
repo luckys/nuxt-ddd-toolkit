@@ -1,10 +1,7 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
-  modules: ['nuxt-ddd-toolkit'],
+  modules: ['@luckys_luis/nuxt-ddd-toolkit'],
   devtools: { enabled: true },
   compatibilityDate: 'latest',
-  dddToolkit: {
-    enableCapabilityDetection: true,
-  },
 })
