@@ -1,0 +1,9 @@
+{
+  "rules": {
+    "correctness": "error",
+    "suspicious": "error",
+    "style": {
+      "no-console": "error"
+    }
+  }
+}
