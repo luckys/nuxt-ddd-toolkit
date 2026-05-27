@@ -4,8 +4,6 @@ English | [Español](./README.es.md)
 
 Domain-Driven Design toolchain for Nuxt 4 / Nitro projects: a **12-rule ESLint plugin** that protects DDD invariants, a **scaffolding CLI** (`laravelize` / `ddd-toolkit`), shared **linting/formatting presets** and an **AI skills catalogue** auto-installed into `.claude/skills/` and `.cursor/rules/`.
 
-> **`@luckys_luis/nuxt-laravelize-config` was renamed to this package in v0.2.0.** The old name still works (it re-exports everything from here) but is deprecated.
-
 ## The Laravelize stack
 
 | Package | Role |
@@ -122,15 +120,6 @@ import { mergeConfig, defineConfig } from 'vitest/config'
 import { vitestBaseConfig } from '@luckys_luis/nuxt-ddd-toolkit/vitest'
 export default mergeConfig(vitestBaseConfig, defineConfig({ test: { coverage: { reporter: ['html'] } } }))
 ```
-
-## Migrating from `nuxt-laravelize-config`
-
-```bash
-pnpm remove @luckys_luis/nuxt-laravelize-config
-pnpm add -D @luckys_luis/nuxt-ddd-toolkit
-```
-
-Then find/replace `@luckys_luis/nuxt-laravelize-config` → `@luckys_luis/nuxt-ddd-toolkit` across your project. All export paths and behaviours are identical.
 
 ## Development
 
