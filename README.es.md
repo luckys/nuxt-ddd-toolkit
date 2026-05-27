@@ -2,13 +2,17 @@
 
 [English](./README.md) | Español
 
-Toolkit DDD para proyectos Nuxt y Nitro, con integración opcional con `nuxt-laravelize`.
+Toolkit ligero de bootstrap para cualquier proyecto Nuxt 4 / Nitro que siga arquitectura Domain-Driven Design. Incluye un módulo Nuxt, un CLI mínimo de preflight, un plugin ESLint que protege la frontera `domain ↔ infrastructure`, y un catálogo de skills IA — todo con integración **opcional** con `@luckys_luis/nuxt-laravelize`.
 
-Este paquete agrupa tres capacidades base de bootstrap:
+Si necesitas el runtime completo estilo Laravel (container DI, queues, mail, notifications, scaffolding, 12 reglas DDD…), usa `@luckys_luis/nuxt-laravelize` + `@luckys_luis/nuxt-laravelize-config`. Este paquete es el **punto de entrada mínimo**.
 
-- un módulo Nuxt para detección de capacidades y exposición runtime
-- un punto de entrada CLI (`laravelize` / `lz`)
-- un plugin de ESLint con reglas de frontera de capas
+## El stack Laravelize
+
+| Paquete | Rol |
+|---|---|
+| **[`@luckys_luis/nuxt-ddd-toolkit`](./)** *(este)* | Capa bootstrap — detección de capacidades, 1 regla ESLint, 4 skills, CLI mínimo. |
+| [`@luckys_luis/nuxt-laravelize`](../nuxt-laravelize) | Runtime — container DI, controllers, queues, mail, notifications, i18n, policies… |
+| [`@luckys_luis/nuxt-laravelize-config`](../nuxt-laravelize-config) | Toolchain — plugin ESLint con 12 reglas DDD, CLI scaffolding (`new:*`), presets, 15 skills IA. |
 
 ## Tabla de contenido
 
@@ -16,175 +20,139 @@ Este paquete agrupa tres capacidades base de bootstrap:
 - [Instalación](#instalación)
 - [Inicio rápido](#inicio-rápido)
 - [Configuración del módulo](#configuración-del-módulo)
-- [Comportamiento de detección de capacidades](#comportamiento-de-detección-de-capacidades)
+- [Detección de capacidades](#detección-de-capacidades)
 - [Uso del CLI](#uso-del-cli)
-- [Uso del plugin de ESLint](#uso-del-plugin-de-eslint)
-- [Límites actuales del bootstrap](#límites-actuales-del-bootstrap)
-- [Desarrollo local](#desarrollo-local)
-- [Flujo de publicación](#flujo-de-publicación)
+- [Plugin ESLint](#plugin-eslint)
+- [Skills IA incluidas](#skills-ia-incluidas)
+- [Desarrollo](#desarrollo)
 
 ## Qué ofrece este paquete
 
-- Registro del módulo Nuxt con clave de configuración: `dddToolkit`.
-- Detección opcional de la dependencia `nuxt-laravelize` en startup.
-- Composable runtime: `useDddToolkitCapabilities()`.
-- Aliases ejecutables del CLI:
-  - `laravelize`
-  - `lz`
-- Regla del plugin ESLint:
-  - `nuxt-ddd-toolkit/no-infrastructure-from-domain`
+- **Módulo Nuxt** con clave de configuración `dddToolkit`.
+- **Detección opcional de capacidades** de `@luckys_luis/nuxt-laravelize` en arranque. Expone `NUXT_DDD_TOOLKIT_HAS_LARAVELIZE=1` si lo encuentra.
+- **Composable runtime** `useDddToolkitCapabilities()` → `{ hasLaravelize: boolean }`.
+- **CLI bins** `laravelize` y `lz` (preflight: informa si `nuxt-laravelize` está presente).
+- **Plugin ESLint** con una regla y cuatro presets.
+- **4 skills IA** (`ddd-architecture`, `frontend-hexagonal-functional`, `nuxt-ddd-cli`, `nuxt-laravelize-runtime`).
 
 ## Instalación
-
-Instálalo en tu proyecto Nuxt:
 
 ```bash
 pnpm add @luckys_luis/nuxt-ddd-toolkit
 ```
 
-Requisito peer:
-
-- `nuxt >= 4.0.0`
-
-Paquete compañero opcional:
-
-- `@luckys_luis/nuxt-laravelize`
+Peer requerido: `nuxt >= 4.0.0`. Paquete compañero opcional: `@luckys_luis/nuxt-laravelize`.
 
 ## Inicio rápido
 
-En `nuxt.config.ts`:
-
 ```ts
-import { defineNuxtConfig } from 'nuxt/config'
-
+// nuxt.config.ts
 export default defineNuxtConfig({
   modules: ['@luckys_luis/nuxt-ddd-toolkit'],
   dddToolkit: {
-    enableCapabilityDetection: true,
+    enableCapabilityDetection: true, // por defecto
   },
 })
 ```
 
-En runtime:
+```vue
+<script setup lang="ts">
+const { hasLaravelize } = useDddToolkitCapabilities()
+</script>
 
-```ts
-const capabilities = useDddToolkitCapabilities()
-
-if (capabilities.hasLaravelize) {
-  console.log('nuxt-laravelize integration is available')
-}
+<template>
+  <p v-if="hasLaravelize">Corriendo con nuxt-laravelize.</p>
+  <p v-else>Modo DDD standalone.</p>
+</template>
 ```
 
 ## Configuración del módulo
 
-Clave del módulo: `dddToolkit`
+| Opción | Tipo | Default | Propósito |
+|---|---|---|---|
+| `enableCapabilityDetection` | `boolean` | `true` | Escanea el `package.json` del host buscando `nuxt-laravelize` al arrancar. `false` evita la lectura FS. |
 
-Opciones disponibles:
+## Detección de capacidades
 
-- `enableCapabilityDetection: boolean` (por defecto: `true`)
+Flujo al arrancar:
 
-Comportamiento:
+1. Lee el `package.json` del consumidor desde `process.cwd()`.
+2. Busca `nuxt-laravelize` en `dependencies` o `devDependencies`.
+3. Si lo encuentra, define `NUXT_DDD_TOOLKIT_HAS_LARAVELIZE=1`.
+4. `useDddToolkitCapabilities()` lee esa variable de entorno en runtime.
 
-- `true`: revisa `package.json` buscando `nuxt-laravelize` en `dependencies` o `devDependencies`.
-- `false`: omite la inspección de capacidades.
-
-## Comportamiento de detección de capacidades
-
-Flujo de detección:
-
-1. Localiza `package.json` desde el directorio de trabajo actual.
-2. Lee `dependencies` y `devDependencies`.
-3. Si existe `nuxt-laravelize`, define la variable:
-   - `NUXT_DDD_TOOLKIT_HAS_LARAVELIZE=1`
-4. El composable runtime expone:
-   - `hasLaravelize: boolean`
+No hay recorridos de filesystem más allá de leer un solo `package.json`. Seguro en CI y contenedores serverless.
 
 ## Uso del CLI
 
-Comandos disponibles:
-
-- `laravelize`
-- `lz`
-
-Comportamiento por defecto:
-
 ```bash
-pnpm laravelize
+pnpm laravelize           # o `pnpm lz`
+pnpm laravelize --cwd .   # directorio explícito
 ```
 
-Con directorio explícito:
+Salida:
 
-```bash
-pnpm laravelize --cwd .
-```
+- `success: nuxt-laravelize capability detected` — cuando el runtime está instalado.
+- `info: Running in standalone DDD toolkit mode` — en caso contrario.
 
-Comportamiento de salida:
+> El CLI completo de scaffolding (`new:context`, `new:aggregate`, `new:use-case`…) vive en `@luckys_luis/nuxt-laravelize-config`.
 
-- imprime éxito cuando detecta `nuxt-laravelize`
-- imprime un mensaje informativo cuando está en modo standalone
+## Plugin ESLint
 
-## Uso del plugin de ESLint
+Subpath: `@luckys_luis/nuxt-ddd-toolkit/eslint-plugin`.
 
-Export del paquete:
+### Regla
 
-- `@luckys_luis/nuxt-ddd-toolkit/eslint-plugin`
+- `nuxt-ddd-toolkit/no-infrastructure-from-domain` — prohíbe imports desde `/infrastructure/` dentro de archivos en `/domain/`.
 
-Regla incluida en configuración `recommended`:
+### Presets
 
-- `nuxt-ddd-toolkit/no-infrastructure-from-domain`
-
-Objetivo:
-
-- Evitar imports desde `/infrastructure/` dentro de archivos ubicados en `/domain/`.
-
-Ejemplo de uso con configuración flat:
+| Preset | Reglas |
+|---|---|
+| `recommended` | `no-infrastructure-from-domain: error` |
+| `strict` | `recommended` + `max-depth: 1` + `no-else-return: error` |
+| `laravelize` | `recommended` (slot reservado para reglas específicas del runtime Laravelize sin churn futuro) |
+| `frontend` | `recommended` (slot reservado para reglas frontend) |
 
 ```js
+// eslint.config.mjs
 import { rules, configs } from '@luckys_luis/nuxt-ddd-toolkit/eslint-plugin'
 
 export default [
   {
-    plugins: {
-      'nuxt-ddd-toolkit': { rules },
-    },
-    rules: {
-      ...configs.recommended.rules,
-    },
+    plugins: { 'nuxt-ddd-toolkit': { rules } },
+    rules: configs.recommended.rules,
   },
 ]
 ```
 
-## Límites actuales del bootstrap
+## Skills IA incluidas
 
-El alcance actual es intencionalmente acotado:
+Formato Anthropic `SKILL.md`. Fuente en `src/skills/`:
 
-- introspección de capacidades
-- exposición runtime de capacidades
-- punto de entrada CLI mínimo
-- una regla arquitectónica de ESLint
+| Skill | Propósito |
+|---|---|
+| `ddd-architecture` | Estructura DDD por capas para cualquier proyecto TS/JS. |
+| `frontend-hexagonal-functional` | Bounded contexts frontend con value objects funcionales. |
+| `nuxt-ddd-cli` | Cómo usar el CLI de preflight `laravelize` / `lz`. |
+| `nuxt-laravelize-runtime` | Integrar `nuxt-ddd-toolkit` con los contratos runtime de `nuxt-laravelize`. |
 
-Todavía no incluye generadores completos de scaffolding ni orquestación avanzada de workflows.
+Este paquete **no** auto-enlaza los skills. Para enlace automático a `.claude/skills/` y `.cursor/rules/` usa `@luckys_luis/nuxt-laravelize-config` (que trae 15 skills más completos).
 
-## Desarrollo local
+## Desarrollo
 
 ```bash
 pnpm install
 pnpm dev:prepare
-pnpm dev
-```
-
-Validaciones de calidad:
-
-```bash
+pnpm dev        # playground
+pnpm test       # vitest
+pnpm typecheck  # vue-tsc --noEmit
 pnpm lint
-pnpm test
-pnpm typecheck
 ```
 
-## Flujo de publicación
+## Publicación
 
 ```bash
-pnpm lint && pnpm test && pnpm typecheck
-pnpm prepack
+pnpm lint && pnpm test && pnpm typecheck && pnpm prepack
 pnpm publish
 ```

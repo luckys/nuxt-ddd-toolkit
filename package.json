@@ -1,6 +1,6 @@
 {
   "name": "@luckys_luis/nuxt-ddd-toolkit",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "DDD toolkit for Nuxt and Nitro projects with optional nuxt-laravelize integration",
   "repository": "nuxt-laravelize/nuxt-ddd-toolkit",
   "license": "MIT",
