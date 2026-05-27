@@ -1,30 +1,17 @@
 #!/usr/bin/env node
 import { defineCommand, runMain } from 'citty'
-import { consola } from 'consola'
 
-import { detectLaravelizeCapability } from '../capability-detection/detect-laravelize'
+import { newCommand } from './commands/new'
+import { skillsCommand } from './commands/skills'
 
 const main = defineCommand({
   meta: {
     name: 'laravelize',
-    description: 'CLI for nuxt-ddd-toolkit scaffolding and workflows',
+    description: 'Tooling CLI for nuxt-laravelize projects: scaffolding and skills management.',
   },
-  args: {
-    cwd: {
-      type: 'string',
-      required: false,
-      default: process.cwd(),
-    },
-  },
-  async run({ args }: { args: { cwd: string } }) {
-    const capability = detectLaravelizeCapability(args.cwd)
-
-    if (capability.installed) {
-      consola.success('nuxt-laravelize capability detected')
-      return
-    }
-
-    consola.info('Running in standalone DDD toolkit mode')
+  subCommands: {
+    new: newCommand,
+    skills: skillsCommand,
   },
 })
 

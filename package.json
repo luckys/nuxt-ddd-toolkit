@@ -1,84 +1,76 @@
 {
   "name": "@luckys_luis/nuxt-ddd-toolkit",
-  "version": "0.1.0",
-  "description": "DDD toolkit for Nuxt and Nitro projects with optional nuxt-laravelize integration",
-  "repository": "nuxt-laravelize/nuxt-ddd-toolkit",
+  "version": "0.2.0",
+  "description": "DDD toolchain for Nuxt 4 / Nitro: 12-rule ESLint plugin, scaffolding CLI (laravelize), shared presets and 15 AI agent skills",
+  "repository": "luckys/nuxt-ddd-toolkit",
   "license": "MIT",
   "type": "module",
-  "packageManager": "pnpm@10.28.2",
-  "publishConfig": {
-    "access": "public"
-  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
   "bin": {
-    "laravelize": "./dist/cli/bin.mjs",
-    "lz": "./dist/cli/bin.mjs"
+    "laravelize": "./dist/cli/bin.js",
+    "ddd-toolkit": "./dist/cli/bin.js"
   },
   "exports": {
     ".": {
-      "types": "./dist/types.d.mts",
-      "import": "./dist/module.mjs"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./eslint": {
+      "types": "./dist/eslint.d.ts",
+      "import": "./dist/eslint.js"
+    },
+    "./vitest": {
+      "types": "./dist/vitest.d.ts",
+      "import": "./dist/vitest.js"
+    },
+    "./tsconfig": {
+      "types": "./dist/tsconfig.d.ts",
+      "import": "./dist/tsconfig.js"
+    },
+    "./oxlint": {
+      "types": "./dist/oxlint.d.ts",
+      "import": "./dist/oxlint.js"
+    },
+    "./dprint": {
+      "types": "./dist/dprint.d.ts",
+      "import": "./dist/dprint.js"
+    },
+    "./lefthook": {
+      "types": "./dist/lefthook.d.ts",
+      "import": "./dist/lefthook.js"
+    },
+    "./postinstall": {
+      "types": "./dist/postinstall/index.d.ts",
+      "import": "./dist/postinstall/index.js"
     },
     "./eslint-plugin": {
       "types": "./dist/eslint-plugin/index.d.ts",
-      "import": "./dist/eslint-plugin/index.mjs"
-    },
-    "./package.json": "./package.json"
-  },
-  "main": "./dist/module.mjs",
-  "typesVersions": {
-    "*": {
-      ".": [
-        "./dist/types.d.mts"
-      ]
+      "import": "./dist/eslint-plugin/index.js"
     }
   },
-  "files": [
-    "dist",
-    "src"
-  ],
-  "workspaces": [
-    "playground"
-  ],
   "scripts": {
-    "prepack": "nuxt-module-build build",
-    "dev": "pnpm run dev:prepare && nuxt dev playground",
-    "dev:build": "nuxt build playground",
-    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
-    "release": "pnpm run lint && pnpm run test && pnpm run prepack && changelogen --release && pnpm publish && git push --follow-tags",
+    "build": "tsup",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:watch": "vitest watch",
-    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "postinstall": "node ./dist/postinstall/index.js"
   },
   "dependencies": {
-    "@nuxt/kit": "^4.4.5",
-    "citty": "^0.1.6",
-    "consola": "^3.4.2"
-  },
-  "peerDependencies": {
-    "nuxt": ">=4.0.0"
-  },
-  "peerDependenciesMeta": {
-    "@luckys_luis/nuxt-laravelize": {
-      "optional": true
-    }
+    "citty": "^0.1.6"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.7",
-    "@luckys_luis/nuxt-laravelize-config": "^0.0.2",
-    "@nuxt/devtools": "^3.2.4",
-    "@nuxt/eslint-config": "^1.15.2",
-    "@nuxt/module-builder": "^1.0.2",
-    "@nuxt/schema": "^4.4.5",
-    "@nuxt/test-utils": "^4.0.3",
-    "@oxc-parser/binding-linux-x64-gnu": "^0.132.0",
-    "@types/node": "latest",
-    "changelogen": "^0.6.2",
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.0",
+    "@typescript-eslint/parser": "^8.59.4",
+    "@typescript-eslint/rule-tester": "^8.59.4",
+    "@typescript-eslint/utils": "^8.59.4",
     "eslint": "^9.39.1",
-    "nuxt": "^4.4.5",
+    "oxlint": "^1.29.0",
+    "tsup": "^8.5.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.5",
-    "vue-tsc": "^3.2.8"
+    "vitest": "^4.0.8"
   }
 }
